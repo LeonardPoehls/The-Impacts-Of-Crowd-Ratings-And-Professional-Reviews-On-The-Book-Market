@@ -2,6 +2,7 @@
 #< ignore
 
 ```{r "setup", eval=FALSE}
+#install.packages("RTutor", repos = c("https://skranz.r-universe.dev", "https://cloud.r-project.org"))
 library(RTutor)
 library(modelsummary)
 library(yaml)
@@ -119,7 +120,7 @@ After editing this chapter, you gained an insight of the initial situation on th
 
 ## Exercise 1.1 -- Book Market, Professional Reviews and Crowd Ratings
 
-Generally, economists differentiate goods concerning their characteristics, their occurrences or other conditions. Focusing the degree of uncertainty, we distinguish between three different goods, **Search Goods**, **Experience Goods** and **Credence Goods**. Buyer of **Search Goods** already have an accurate perception and a high degree of certainty of what they want to buy. For instance, sugar or computer are typical search goods. **Experience Goods** are associated with a lower degree of certainty. Without any information advantages, buyers are not capable to assess the goods quality until the buyer starts comsuming it, such as visits to cinema or whine. By the consumption of **Credence Goods** the buyer never gets into the situation to evaluate the quality of the underlying good as the degree of uncertainty is the highest here. Common credence goods are services like lawyers or surgeons (Wieneke, 2019). 
+Generally, economists differentiate goods concerning their characteristics, their occurrences or other conditions. Focusing the degree of uncertainty, we distinguish between three different goods, **Search Goods**, **Experience Goods** and **Credence Goods**. Buyer of **Search Goods** already have an accurate perception and a high degree of certainty of what they want to buy. For instance, sugar or computer are typical search goods. **Experience Goods** are associated with a lower degree of certainty. Without any information advantages, buyers are not capable to assess the goods quality until the buyer starts consuming it, such as visits to cinema or whine. By the consumption of **Credence Goods** the buyer never gets into the situation to evaluate the quality of the underlying good as the degree of uncertainty is the highest here. Common credence goods are services like lawyers or surgeons (Wieneke, 2019). 
 
 #< quiz "Books_As_Goods"
 question: What would you guess books belong to?
@@ -200,8 +201,8 @@ Under these conditions, we apply a graph to illustrate the situation between dem
 **Task:** Run the following chunk to create this model. Press `check` to collect your points. 
 
 ```{r "1.2.1"}
-#< task_notest
 
+#< task_notest
 #load the package "ggplot2"
 library(ggplot2)
 #Create a fictive data set 
@@ -237,7 +238,6 @@ geom_text(aes(x=3.35, y=1.78, label = "Supply"), color = "Black", angle = 45, si
   theme(
  # axis.text.y=element_blank(),
   panel.grid.minor=element_blank(),plot.background=element_blank())
-
 #>
 
 ```
@@ -282,7 +282,8 @@ Price elasticity can be also shown graphically. The following graph illustrates 
 **Task:** Execute the chunk below to see how the demand curve slope changes with different price elasticities
 
 ```{r "1.2.2", warning=FALSE}
-#< task
+
+#< task_notest  
 #Create a fictive data set 
 DatasetPE <- data.frame(
   Price = 1:10,
@@ -292,11 +293,11 @@ DatasetPE <- data.frame(
 )
 colnames(DatasetPE) <- c("Price", "ε > 1", "ε = 1", "ε < 1")
 
-DatasetPE <- DatasetPE %>% 
+DatasetPEN <- DatasetPE %>% 
   pivot_longer(cols = starts_with("ε"), names_to = "ε", values_to = "Quantity_Value") 
 
 # Umwandeln der Daten in "long format"
-ggplot(data = DatasetPE, aes(x = Price, y = Quantity_Value, group = ε)) +
+ggplot(data = DatasetPEN, aes(x = Price, y = Quantity_Value, group = ε)) +
   geom_line() +
   theme_bw() +
   geom_segment(aes(x = 4, y = 8, xend = 4, yend = 9), color = "red", linetype = "dashed") +
@@ -330,8 +331,8 @@ ggplot(data = DatasetPE, aes(x = Price, y = Quantity_Value, group = ε)) +
 Returning to the subject of pre-purchase information, a clear classification of these are needed. Alan T. Sorensen and Kenneth Train claimed that pre-purchase information changes the perception of the books quality and that a distinction between anticipated ex ante utility and experienced ex post utility is needed to measure the effect of these information on welfare. In simpler terms, we assume that a consumer obtains a different use depending on the availability of pre-purchase information. In sum, the consumer could face three various situations depending on the books expected quality. The consumer can expect lower quality than the actual quality ($\bar R_{j}$ < $R_{j}$), the same quality ($\bar R_{j}$ = $R_{j}$) or a higher expected quality than the actual quality ($\bar R_{j}$ > $R_{j}$). 
 
 ```{r "1.2.3", warning=FALSE}
-#< task
 
+#< task_notest
 #Create a fictive data set 
 yPredQualityPrice <- c(1.6,1.0,0.50,0.15,-0.10)
 xQuan <- c(1,2,3,4,5)
@@ -552,12 +553,13 @@ DesIntersection <- data.frame(Intersection_NYT = c(NA, n_distinct(data$titleno[d
                               
                               Intersection_DWSJ = c(n_distinct(data$titleno[data$DWSJ == 1 & data$DNYT == 1]), n_distinct(data$titleno[data$DWSJ == 1 & data$DLAT == 1]), n_distinct(data$titleno[data$DWSJ == 1 & data$DBG == 1]), n_distinct(data$titleno[data$DWSJ == 1 & data$DCHI == 1]), n_distinct(data$titleno[data$DWSJ == 1 & data$DWAPO == 1]), NA, n_distinct(data$titleno[data$DWSJ == 1 & data$DWAPO == 0 & data$DLAT == 0 & data$DCHI == 0 & data$DBG == 0 & data$DNYT == 0])))
                     
-#DesIntersection <- rbind(DesIntersection, colSums(DesIntersection, na.rm = TRUE))
+DesIntersection <- rbind(DesIntersection, colSums(DesIntersection, na.rm = TRUE))
 
-row.names(DesIntersection) <- c("New York Times", "Los Angeles Times", "Boston Globe", "Chicago Tribune", "Washington Post", "Wall Street Journal", "Without Intersections")
+row.names(DesIntersection) <- c("New York Times", "Los Angeles Times", "Boston Globe", "Chicago Tribune", "Washington Post", "Wall Street Journal", "Without Intersections", "Sum")
 
 DesIntersection  %>%
-kbl(col.names = c("Intersection_NYT" = "∩ New York Times", "Intersection_LAT" = "∩ Los Angeles Times", "Intersection_BG" = "∩ Boston Globe",  "∩ Intersection_CHI" = "∩ Chicago Tribune", "∩ Intersection_WAPO" = "∩ Washington Post", "Intersection_DWSJ" = "∩ Wall Street Journal"), caption = "Intersections between New York Times and other magazines ") %>%
+kbl(col.names = c("Intersection_NYT" = "∩ New York Times", "Intersection_LAT" = "∩ Los Angeles Times", "Intersection_BG" = "∩ Boston Globe",  "∩ Intersection_CHI" = "∩ Chicago Tribune", "∩ Intersection_WAPO" = "∩ Washington Post", "Intersection_DWSJ" = "∩ Wall Street Journal"), caption = "Intersections between the New York Times and other magazines ") %>%
+   pack_rows("", 8, 8) %>%
   kable_paper("striped", full_width = TRUE) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
 
@@ -661,7 +663,7 @@ f2 <- ggplot(aes(x = numbooks, fill = Group), data = DesAuth) +
   guides(fill=guide_legend(title="")) +
   theme(legend.position = c(0.85, 0.75),
   panel.grid.minor=element_blank(),plot.background=element_blank())
-
+f2
 grid.arrange(f1, f2, ncol = 2)
 ```
 
@@ -1131,7 +1133,7 @@ Let us look at an example for this. We want to create a regression where the sal
 
 $$ y = β_0 + β_1 x_1 + \varepsilon $$
 
-In the following, the variable `canum` (chapter 2.1) serves us as fixed effects. The regression considers the variable canum as fixed, controlling for each expression of the variable `canum`. Thus, book- and country-specific differences should eliminate effects on the price.  
+In the following, the variable `canum` (chapter 2.1) serves us as fixed effects. The regression considers the variable `canum` as fixed, controlling for each expression of the variable `canum`. Thus, book- and country-specific differences should eliminate effects on the price.  
 
 **Task:** Replace the ___ gaps to create a regressions with fixed effects. Compare this regression `regFirstStep` with a regression without differences occur. Press `check` after solving this exercise. 
 
@@ -1139,7 +1141,7 @@ In the following, the variable `canum` (chapter 2.1) serves us as fixed effects.
 
 #< fill_in
 
-# Load the package `modelsummary` to gain a more handsome regression table
+# Load the package `modelsummary` to gain a more personable regression table
 library(____________) 
 # Create a regression using `canum` as fixed effects. Add robust standard errors. 
 regFE <- feols(____ ~ pamzn | _____, ____ = "he____", data = dataLite)
@@ -1157,11 +1159,11 @@ modelsummary(list(regWFE, regFE), statistic = "({std.error})", coef_rename = c("
 
 Column two shows the fixed-effects estimate with robust standard errors, while column one shows the regular regression. It is noticeable that the regressions estimate completely different values for the coefficients. Chapter 2.3 showed price differences that can be attributed to the respective country in which the book was rated. The regular regression seems to show exactly this endogeneity problem, that the Amazon price also depends on the country where the book was rated, as well as many other factors. Using fixed effects, we eliminated the country-specific effect and obtained the information that the Amazon price and the sales rank are negatively related. 
 
-The fixed-effects model requires a so-called panel data structure that has data available for each individual (here: Books) at different points in time. However, the addition of fixed effects can also lead to inaccuracies and biases.                                        The disadvantage is that the variables used as fixed effects can no longer be included in the regression as explanatory variables. This model also assumes that the explanatory variable is not collinear (perfectly correlated) to the fixed effects, otherwise this explanatory variable would be determined purely by the fixed effects. Finally, the endogeneity problem can not get completely eliminated by a fixed-effects model. Better suited for this purpose is the Difference-in-Difference approach or Instrumental Variable Estimation, which are not further discussed in the course of this problem set.                                                      
+The fixed-effects model requires a so-called panel data structure that has data available for each individual (here: Books) at different points in time. However, the addition of fixed effects can also lead to inaccuracies and biases. The disadvantage is that the variables used as fixed effects can no longer be included in the regression as explanatory variables. This model also assumes that the explanatory variable is not collinear (perfectly correlated) to the fixed effects, otherwise this explanatory variable would be determined purely by the fixed effects. Finally, the endogeneity problem can not get completely eliminated by a fixed-effects model. Better suited for this purpose is the Difference-in-Difference approach or Instrumental Variable Estimation, which are not further discussed in the course of this problem set.                                                      
 
 **Summary**
 
-To sum up, this chapter has given us a handsome overview about some basics and advanced methods and tools for working with regressions. First, we learned how regressions basically work, how to interpret them using particular values, and how they are implemented in R. We distinguished between linear and multiple regressions and how control variables potentially affect multiple regressions. We found multiple differences in the regression coefficients and the coefficients of determination when we added control variables. Second, the effect of Robust Standard Errors was discussed and implemented in R. We extracted the information that inserting Robust Standard Errors can be quite useful to ensure homoskedasticity. Finally, we learned how to explain and to implement fixed effects. Application on the Amazon data set underscored the utility and potential of fixed effects for subsequent examinations. 
+To sum up, this chapter has given us a personable overview about some basics and advanced methods and tools for working with regressions. First, we learned how regressions basically work, how to interpret them using particular values, and how they are implemented in R. We distinguished between linear and multiple regressions and how control variables potentially affect multiple regressions. We found multiple differences in the regression coefficients and the coefficients of determination when we added control variables. Second, the effect of Robust Standard Errors was discussed and implemented in R. We extracted the information that inserting Robust Standard Errors can be quite useful to ensure homoskedasticity. Finally, we learned how to explain and to implement fixed effects. Application on the Amazon data set underscored the utility and potential of fixed effects for subsequent examinations. 
 
 In the following chapter, we apply the methods and tools from this chapter to examine the overall effects on sales ranks and prices.
 
@@ -1179,7 +1181,7 @@ dataUS <- data %>%
     arrange(canum, ddate)
 ```
 
-In their paper, Reimers and Waldfogel used logarithmic values for their estimation. The logarithmization of dependent or explanatory variables can be associated with many advantages. First, logarithmization can be used to stabilize the variance of the residuals to avoid heteroskedasticity. Further, outlier values are mitigated in their effect so that they have less influence on the magnitude of the regression coefficient. The third advantage is due to the interpretation of the regression coefficients. Logarithmized coefficients allow us to interpret these coefficients as percentages for simplicity. The possible interpretation are as follows (Kranz, 2022):
+In their paper, Reimers and Waldfogel used logarithmic values for their estimation. The logarithmization of dependent or explanatory variables can be associated with many advantages. First, logarithmization can be used to stabilize the variance of the residuals to avoid heteroskedasticity. Further, outlier values are mitigated in their effect so that they have less influence on the magnitude of the regression coefficient. The third advantage is due to the interpretation of the regression coefficients. Logarithmized coefficients allow us to interpret these coefficients as percentages for simplicity. The possible interpretations are as follows (Kranz, 2022):
 
 * **log - log**: log $\hat/y$ = $\hat\beta_0$ + log $β_1 x_1$, for a one percent increase in $x_1$, the predicted value of $y$ increases by approximately $β_1$ percent. 
 
@@ -1187,6 +1189,38 @@ In their paper, Reimers and Waldfogel used logarithmic values for their estimati
 
 * **level - log**: $\hat/y$ = $\hat\beta_0$ + log $β_1 x_1$, for a one percent increase in $x_1$, the predicted value of $y$ increases by approximately 0.01 * $β_1$ units. 
 
+
+The regressions created by Reimers and Waldfogel are based on the **log - log** method. In their main regression table, they created five different regressions using `lrank` as dependent variable. The variable `L1.lrank` specified the lagged sales rank from the last date documented in the data set. The addition of `L1.lrank` has the advantage that seasonal fluctuations are included in the regression. Similarly, this variable is predestined for estimates such as this one because the variable can capture short-term (triggered by professional reviews) increases in sales rank.    
+
+**Task:** Run the following chunk to create `reg2` with `ano` as fixed effects and robust standard errors. 
+
+```{r "3.2.2", warning=FALSE}
+#< task_notest
+reg2 <- feols(lrank ~ L1.lrank + lpamzn + lreview + lR  + dnytpost1_3 + dnytpost6_3 +  dnytpost10_3 + dothpost_3 + dothpost10_3 + dnytpostpre_1 + dnytpostpre_2 + dnytpostpre_3 + dothpostpre_1 + dothpostpre_2 + dothpostpre_3 + dnytpost1r_3 + dnytpost6r_3 + dnytpost10r_3 + dnytpostprer_1 + dnytpostprer_2 + dnytpostprer_3 + epos + epos2 + epos3 + eneg + eneg2 + eneg3 | ano, vcov = "hetero", data = dataUS)
+#>
+```
+
+Now, we want to generate another regression using the more explanatory variables. 
+
+**Task:** Create 
+
+```{r}
+#>task
+
+#>
+reg3 <- feols(lrank ~ L1.lrank + lpamzn + lreview + lR + lrR + dnytpost1_3 + dnytpost6_3 + dnytpost10_1 + dnytpost10_2 +  dnytpost10_3 + dothpost_1 + dothpost_2 + dothpost_3 + dothpost10_1 + dothpost10_2 + dothpost10_3 + dnytpostpre_1 + dnytpostpre_2 + dnytpostpre_3 + dothpostpre_1 + dothpostpre_2 + dothpostpre_3 + dnytpost1r_3 + dnytpost6r_3 + dnytpost10r_3 + dnytpostprer_1 + dnytpostprer_2 + dnytpostprer_3 + epos + epos2 + epos3 + eneg + eneg2 + eneg3 | ano, vcov = "hetero", data = dataUS)
+
+```
+
+#< quiz "Robust_standard_errors"
+question: What is your suggestion, do   
+sc:
+- You can omit the robust standard errors, as they reduce the accuracy of the coefficients. 
+- Robust standard errors should generally be added to any regression, as regressions without them are generally inaccurate.
+- It is advisable to add robust standard errors but not necessary. Even with higher standard errors, it may be important to avoid heteroscedasticity.*  
+success: Great, your answer is correct!  
+failure: Try again.
+#>
 
 
 
